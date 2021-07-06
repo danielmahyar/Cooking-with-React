@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import RecipeIngredientEdit from './RecipeIngredientEdit';
 import { RecipeContext } from './App'
 import { v4 as uuidv4 } from 'uuid'
+import RecipeAuthorEdit from './RecipeAuthorEdit'
+
 
 
 const RecipeEdit = ({ recipe }) => {
@@ -9,6 +11,7 @@ const RecipeEdit = ({ recipe }) => {
 
 	function handleChange(changes) {
 		handleRecipeChange(recipe.id, { ...recipe, ...changes })
+		console.log({ ...recipe, ...changes })
 	}
 
 	function handleIngredientChange(id, ingredient){
@@ -33,6 +36,30 @@ const RecipeEdit = ({ recipe }) => {
 		handleChange({ 
 			ingredients: recipe.ingredients.filter(ingredient => ingredient.id !== id) 
 		})
+	}
+
+
+	function handleAuthorChange(id, newAuthor) {
+		const authors = [...recipe.authors]
+		const index = authors.findIndex(author => author.id === id)
+		authors[index] = newAuthor
+
+		handleChange({ authors: authors })
+	}
+
+	function handleAuthorDelete(id){
+		const authors = [...recipe.authors]
+		const filteredAuthors = authors.filter(author => author.id !== id)
+		handleChange({ authors: filteredAuthors })
+	}
+
+	function handleAuthorAdd(){
+		const newAuthor = {
+			id: uuidv4(),
+			name: ''
+		}
+
+		handleChange({ authors: [...recipe.authors, newAuthor]})
 	}
 
 	return (
@@ -66,12 +93,14 @@ const RecipeEdit = ({ recipe }) => {
 				<div>Amount</div>
 				<div></div>
 				{recipe.ingredients.map(ingredient => {
-					return (<RecipeIngredientEdit 
+					return (
+					<RecipeIngredientEdit 
 						key={ingredient.id}
 						ingredient={ingredient}
 						handleIngredientChange={handleIngredientChange}
 						handleIngredientDelete={handleIngredientDelete}
-					/>)
+					/>
+					)
 				})}
 			</div>
 			<div className="recipe-edit__add-ingredient-btn-container">
@@ -80,6 +109,29 @@ const RecipeEdit = ({ recipe }) => {
 					onClick={() => handleIngredientAdd()}
 				>
 				Add ingredient</button>
+			</div>
+			<label className="recipe-edit__label">Authors</label>
+			<div className="recipe-edit__author-grid">
+				<div>Name</div>
+				<div></div>
+				{recipe.authors.map(author => {
+					return (
+						<RecipeAuthorEdit 
+							key={author.id}
+							author={author}
+							handleAuthorChange={handleAuthorChange}
+							handleAuthorDelete={handleAuthorDelete}
+						/>
+					)
+				})}
+			</div>
+
+			<div className="recipe-edit__add-ingredient-btn-container">
+				<button 
+					className="btn btn--primary"
+					onClick={() => handleAuthorAdd()}
+				>
+				Add author</button>
 			</div>
 		</div>
 	);

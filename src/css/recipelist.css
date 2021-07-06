@@ -7,6 +7,18 @@
 .recipe-list__add-recipe-btn-container{
 	padding-top: 30px;
 	padding-bottom: 30px;
-
 	text-align: center;
+}
+
+.recipe-list__search-bar-container{
+	text-align: center;
+}
+
+.recipe-list__search-bar{
+	padding: 10px 0;
+	outline: none;
+	border: none;
+	border-bottom: 1px solid black;
+	font-size: inherit;
+	width: 50%;
 }

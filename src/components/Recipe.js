@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import IngredientList from './IngredientList';
 import { RecipeContext } from './App';
+import AuthorList from './AuthorList';
+
 
 const Recipe = (props) => {
 	const {
@@ -9,9 +11,9 @@ const Recipe = (props) => {
 		cookTime,
 		servings, 
 		instructions,
-		ingredients
+		ingredients,
+		authors
 	} = props
-
 
 	const { handleRecipeDelete, handleRecipeSelect } = useContext(RecipeContext)
 	return (
@@ -49,6 +51,12 @@ const Recipe = (props) => {
 				<span className="recipe__label">Ingredients: </span>
 				<div className="recipe__value recipe__value--indented">
 					<IngredientList ingredients={ingredients}/>
+				</div>
+			</div>
+			<div className="recipe__row">
+				<span className="recipe__label">Authors: </span>
+				<div className="recipe__value recipe__value--indented">
+					<AuthorList authors={authors}/>
 				</div>
 			</div>
 		</div>

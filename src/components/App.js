@@ -12,6 +12,7 @@ function App() {
   const [selectedRecipeId, setSelectedRecipeId] = useState()
   const [recipes, setRecipes] = useState(sampleRecipes)
   const selectedRecipe = recipes.find(recipe => recipe.id === selectedRecipeId)
+
   
   useEffect( () => {
     const recipeJSON = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
@@ -38,6 +39,7 @@ function App() {
     setRecipes(newRecipes)
   }
 
+
   function handleRecipeSelect(id){
     setSelectedRecipeId(id)
   }
@@ -51,6 +53,9 @@ function App() {
       instructions: '',
       ingredients: [
 
+      ],
+      authors: [
+        
       ]
     }
     setSelectedRecipeId(newRecipe.id)
@@ -63,6 +68,8 @@ function App() {
     }
     setRecipes(recipes.filter(recipe => recipe.id !== id))
   }
+
+
 
 
   return (
@@ -95,6 +102,16 @@ const sampleRecipes = [
         name: 'Salt',
         amount: '1 Tbs'
       }
+    ],
+    authors: [
+      {
+        id: 1,
+        name: 'Daniel'
+      },
+      {
+        id: 2,
+        name: 'Kyle'
+      }
     ]
   },
   {
@@ -113,6 +130,16 @@ const sampleRecipes = [
         id: 2,
         name: 'Paprika',
         amount: '2 Tbs'
+      }
+    ],
+    authors: [
+      {
+        id: 1,
+        name: 'Daniel'
+      },
+      {
+        id: 2,
+        name: 'Kile'
       }
     ]
   }

@@ -30,6 +30,7 @@
 
 .recipe-edit__label{
 	font-weight: bold;
+	margin-top: 10px;
 }
 
 .recipe-edit__input{
@@ -50,6 +51,14 @@ textarea.recipe-edit__input{
 	display: grid;
 	gap: 10px;
 	grid-template-columns: repeat(3, auto);
+	margin-top: 20px;
+	margin-left: 40px;
+}
+
+.recipe-edit__author-grid{
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(2, auto);
 	margin-top: 20px;
 	margin-left: 40px;
 }
