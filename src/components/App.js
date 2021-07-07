@@ -61,10 +61,19 @@ function App() {
   }
 
   function handleRecipeChange(id, recipe) {
-    const newRecipes = [...recipes]
-    const index = newRecipes.findIndex(r => r.id === id)
-    newRecipes[index] = recipe
-    setRecipes(newRecipes)
+    const UpdateRecipePromise = fetch(API_URL + id, { 
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(recipe)
+    })
+    UpdateRecipePromise.then(res => res.json())
+    .then(updatedRecipe => {
+      const newRecipes = [...recipes]
+      const mappedRecipe = mapRecipesID([updatedRecipe])
+      const index = newRecipes.findIndex(r => r.id === id)
+      newRecipes[index] = mappedRecipe[0]
+      setRecipes(newRecipes)
+    })
   }
 
 
