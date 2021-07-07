@@ -2,26 +2,53 @@ import React, { useState, useEffect } from 'react'
 import RecipeList from './RecipeList'
 import RecipeEdit from './RecipeEdit'
 import '../css/App.css'
-import { v4 as uuidv4 } from 'uuid'
 
 export const RecipeContext = React.createContext()
 
-const LOCAL_STORAGE_KEY = "cookingWithReact.recipes"
+const API_URL = 'http://localhost:4200/recipes/'
 
 function App() {
   const [selectedRecipeId, setSelectedRecipeId] = useState()
   const [recipes, setRecipes] = useState(sampleRecipes)
   const selectedRecipe = recipes.find(recipe => recipe.id === selectedRecipeId)
 
-  
+  /*
+    UseEffect func to retrieve recipes from DB once
+  */
   useEffect( () => {
-    const recipeJSON = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
-    //This is a test
-    if(recipeJSON != null) setRecipes(recipeJSON)
+    const recipeDataFromDB = fetch(API_URL)
+
+    recipeDataFromDB
+    .then((res => res.json()))
+    .then((recipesFromDB) => {
+      
+      if(recipesFromDB != null) {
+        const mappedRecipes = recipesFromDB.map(recipe => {
+          const changeObj = {
+            id: recipe._id,
+            ingredients: 
+              recipe.ingredients.map(ingredient => {
+                return { ...ingredient, id: ingredient._id }
+              }),
+            authors: 
+              recipe.authors.map(author => {
+                return { ...author, id: author._id}
+              })
+          }
+          return { ...recipe, ...changeObj }
+        })
+        console.log(mappedRecipes)
+        setRecipes(mappedRecipes)
+      }
+    })  
+    .catch(err => {
+      console.log(err)
+    })
+
   }, [])
 
   useEffect( () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recipes))
+
     return () => console.log('Recipes set')
   }, [recipes])
 
@@ -47,7 +74,6 @@ function App() {
 
   function handleRecipeAdd(){
     const newRecipe = {
-      id: uuidv4(),
       name: '',
       servings: 1,
       cookTime: '',
@@ -59,15 +85,36 @@ function App() {
         
       ]
     }
-    setSelectedRecipeId(newRecipe.id)
-    setRecipes([...recipes, newRecipe])
+
+    const AddRecipePromise = fetch(API_URL + "newrecipe", {
+      method: 'POST',
+      body: JSON.stringify(newRecipe)
+    })
+
+    AddRecipePromise.then(res => res.json())
+    .then((updatedRecipe) => {
+      const mappedRecipe = mapRecipesID([updatedRecipe])
+      setSelectedRecipeId(mappedRecipe[0].id)
+      setRecipes([...recipes, mappedRecipe[0]])
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+
   }
 
   function handleRecipeDelete(id){
-    if(selectedRecipeId != null && selectedRecipeId === id){
-      setSelectedRecipeId(undefined)
-    }
-    setRecipes(recipes.filter(recipe => recipe.id !== id))
+    const DeletePromise = fetch(API_URL + id, {
+      method: 'DELETE'
+    })
+
+    DeletePromise.then(() => {
+      console.log("Successfully deleted")
+      if(selectedRecipeId != null && selectedRecipeId === id){
+        setSelectedRecipeId(undefined)
+      }
+      setRecipes(recipes.filter(recipe => recipe.id !== id))
+    })
   }
 
 
@@ -146,7 +193,24 @@ const sampleRecipes = [
   }
 ]
 
+function mapRecipesID(recipeArray) {
+  const mappedRecipes = recipeArray.map(recipe => {
+    const changeObj = {
+      id: recipe._id,
+      ingredients: 
+        recipe.ingredients.map(ingredient => {
+          return { ...ingredient, id: ingredient._id }
+        }),
+      authors: 
+        recipe.authors.map(author => {
+          return { ...author, id: author._id}
+        })
+    }
+    return { ...recipe, ...changeObj }
+  })
 
+  return mappedRecipes
+}
 
 
 
