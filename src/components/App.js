@@ -5,7 +5,7 @@ import '../css/App.css'
 
 export const RecipeContext = React.createContext()
 
-const API_URL = 'http://localhost:4200/recipes/'
+const API_URL = 'https://cooking-with-react.herokuapp.com/recipes/'
 
 function App() {
   const [selectedRecipeId, setSelectedRecipeId] = useState()
